@@ -1,0 +1,93 @@
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+  <ng-container matColumnDef="select">
+    <mat-header-cell *matHeaderCellDef>
+      <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+        [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+      </mat-checkbox>
+    </mat-header-cell>
+    <mat-cell *matCellDef="let row">
+      <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+        [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+      </mat-checkbox>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Position Column -->
+  <ng-container matColumnDef="position">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> No. </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+    <mat-cell *matCellDef="let element;let index = index">
+      <editable (update)="updateField(index, 'name')">
+        <ng-template viewMode>
+          {{element.name}}
+        </ng-template>
+        <ng-template editMode>
+          <mat-form-field class="example-full-width">
+            <input matInput [class.is-invalid]="getControl(index , 'name').invalid && getControl(index , 'name').touched" [formControl]="getControl(index, 'name')">
+            <mat-error *ngIf="getControl(index, 'name').hasError('required')">
+             This Field is required!
+            </mat-error>
+          </mat-form-field>
+          <!-- <input  [formControl]="getControl(index, 'name')" focusable editableOnEnter> -->
+        </ng-template>
+      </editable>
+    </mat-cell>
+
+
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="weight">
+    <mat-header-cell *matHeaderCellDef> Weight </mat-header-cell>
+    <mat-cell *matCellDef="let element;let index = index">
+      <editable (update)="updateField(index, 'weight')">
+        <ng-template viewMode>
+          {{element.weight}}
+        </ng-template>
+        <ng-template editMode>
+          <mat-form-field class="example-full-width">
+            <input matInput [formControl]="getControl(index, 'weight')">
+          </mat-form-field>
+        </ng-template>
+      </editable>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="symbol">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Symbol </mat-header-cell>
+    <mat-cell *matCellDef="let element;let index = index">
+      <editable (update)="updateField(index, 'symbol')">
+        <ng-template viewMode>
+          {{element.symbol}}
+        </ng-template>
+        <ng-template editMode>
+          <mat-form-field class="example-full-width">
+            <input matInput [formControl]="getControl(index, 'symbol')" focusable editableOnEnter>
+            <mat-error *ngIf="getControl(index, 'symbol').hasError('required')">
+                This Field is required!
+               </mat-error>
+          </mat-form-field>
+        </ng-template>
+      </editable>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)"></mat-row>
+</table>
+
+
+<div class="example-container mat-elevation-z8">
+    <button mat-raised-button color="primary" (click)="removeSelectedRows()">
+      Remove Selected Rows
+    </button>
