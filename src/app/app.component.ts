@@ -1,10 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormArray, FormGroup, Validators } from '@angular/forms';
 
-import {CoreService} from './core.service';
+import { CoreService } from './core.service';
 import { MatTableDataSource, MatSort } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
-import { PeriodicElement} from './models/periodic';
+import { PeriodicElement } from './models/periodic';
 
 @Component({
   selector: 'app-root',
@@ -12,29 +12,46 @@ import { PeriodicElement} from './models/periodic';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  displayedColumns: string[] = ['select','position', 'name', 'weight', 'symbol'];
-  dataSource : any;
+  displayedColumns: string[] = this.core.listHeader;
+  columnsToDisplay: string[] = this.displayedColumns.slice();
+  dataSource: any;
   controls: FormArray;
   data = Object.assign(this.core.list);
+  selected = "";
+
+  position : number ;
+  name : string = "";
+  weight  : number;
+  symbol : string ="";
+  status : string ="";
+  
+
+
 
   selection = new SelectionModel<PeriodicElement[]>(true, []);
 
-  @ViewChild(MatSort, {static: true}) sort : MatSort;
+  private sort : MatSort
+  @ViewChild(MatSort, { static: false }) set matSort(ms : MatSort){
+    this.sort = ms;
+    this.dataSource.sort = this.sort;
+  }
 
-  constructor(private core: CoreService){}
+  constructor(private core: CoreService) { }
+
 
   ngOnInit() {
-      this.core.list$.subscribe(res => {
-        this.dataSource = new MatTableDataSource(res)
-      })
+    this.core.list$.subscribe(res => {
+      this.dataSource = new MatTableDataSource(res)
+    })
 
     const toGroups = this.core.list$.value.map(entity => {
       return new FormGroup({
-        position:  new FormControl(entity.position,[Validators.required]),
-        name: new FormControl(entity.name, [Validators.required]), 
+        position: new FormControl(entity.position, [Validators.required]),
+        name: new FormControl(entity.name, [Validators.required]),
         weight: new FormControl(entity.weight, Validators.required),
-        symbol: new FormControl(entity.symbol, Validators.required)
-      },{updateOn: "blur"});
+        symbol: new FormControl(entity.symbol, Validators.required),
+        status: new FormControl(entity.status, Validators.required)
+      }, { updateOn: "blur" });
     });
 
     this.controls = new FormArray(toGroups);
@@ -43,23 +60,36 @@ export class AppComponent {
 
   }
 
+  addColumn() {
+    let randomColumn = 0;
+    while (randomColumn === 0) {
+      randomColumn = this.getRandomIndex();
+    }
+    this.columnsToDisplay.push(this.displayedColumns[randomColumn]);
+
+  }
+
+  getRandomIndex() {
+    return Math.floor(Math.random() * this.displayedColumns.length);
+  }
+
 
   updateField(index, field) {
     const control = this.getControl(index, field);
     if (control.valid) {
-      this.core.update(index,field,control.value);
+      this.core.update(index, field, control.value);
       this.dataSource.sort = this.sort;
-      console.log(index,field,control.value);
+      console.log(index, field, control.value);
     }
 
-   }
+  }
 
-   removeSelectedRows() {
+  removeSelectedRows() {
 
     this.selection.selected.forEach(item => {
       let index: number = this.data.findIndex(d => d === item);
       console.log(this.data.findIndex(d => d === item));
-      this.data.splice(index,1)
+      this.data.splice(index, 1)
       this.dataSource = new MatTableDataSource<PeriodicElement[]>(this.dataSource.data);
       console.log(this.dataSource.data);
       this.core.list$.next(this.dataSource.data);
@@ -68,7 +98,7 @@ export class AppComponent {
   }
 
   getControl(index, fieldName) {
-    const a  = this.controls.at(index).get(fieldName) as FormControl;
+    const a = this.controls.at(index).get(fieldName) as FormControl;
     return this.controls.at(index).get(fieldName) as FormControl;
   }
 
@@ -82,8 +112,8 @@ export class AppComponent {
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
     this.isAllSelected() ?
-        this.selection.clear() :
-        this.dataSource.data.forEach(row => this.selection.select(row));
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
   /** The label for the checkbox on the passed row */
@@ -94,4 +124,9 @@ export class AppComponent {
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.position + 1}`;
   }
 
+addRow(){
+  this.core.list.push({position: this.position, name: this.name, weight: this.weight, symbol: this.symbol , status : this.status});
+  this.dataSource = new MatTableDataSource<PeriodicElement[]>(this.dataSource.data);
+}
+  
 }

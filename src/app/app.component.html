@@ -1,12 +1,12 @@
 <mat-card class="card">
 
-<mat-card-content>
-<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+  <mat-card-content>
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
-  <!--- Note that these columns can be defined in any order.
+      <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
-  <ng-container matColumnDef="select">
+      <!-- <ng-container matColumnDef="select">
     <mat-header-cell *matHeaderCellDef>
       <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
         [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
@@ -17,16 +17,99 @@
         [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
       </mat-checkbox>
     </mat-cell>
-  </ng-container>
+  </ng-container> -->
 
-  <!-- Position Column -->
-  <ng-container matColumnDef="position">
-    <mat-header-cell *matHeaderCellDef mat-sort-header> No. </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.position}} </mat-cell>
-  </ng-container>
+      <!-- Position Column -->
+      <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
+        <ng-container *ngIf="column === 'select';else elseBlock">
+          <mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+            </mat-checkbox>
+          </mat-header-cell>
+        </ng-container>
+        <ng-template #elseBlock>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>{{column}}</mat-header-cell>
+        </ng-template>
 
-  <!-- Name Column -->
-  <ng-container matColumnDef="name">
+
+        <mat-cell *matCellDef="let element;let index = index">
+          <ng-container *ngIf="column === 'select'">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null"
+              [checked]="selection.isSelected(element)" [aria-label]="checkboxLabel(element)">
+            </mat-checkbox>
+          </ng-container>
+          <ng-container *ngIf="column ===  'position'">
+            {{element[column]}}
+          </ng-container>
+          <ng-container *ngIf="column === 'name'">
+            <editable (update)="updateField(index, 'name')">
+              <ng-template viewMode>
+                {{element[column]}}
+              </ng-template>
+              <ng-template editMode>
+                <mat-form-field class="example-full-width">
+                  <input matInput
+                    [class.is-invalid]="getControl(index , 'name').invalid && getControl(index , 'name').touched"
+                    [formControl]="getControl(index, 'name')">
+                  <mat-error *ngIf="getControl(index, 'name').hasError('required')">
+                    This Field is required!
+                  </mat-error>
+                </mat-form-field>
+              </ng-template>
+            </editable>
+          </ng-container>
+          <ng-container *ngIf="column === 'weight'">
+            <editable (update)="updateField(index, 'weight')">
+              <ng-template viewMode>
+                {{element[column]}}
+              </ng-template>
+              <ng-template editMode>
+                <mat-form-field class="example-full-width">
+                  <input matInput [formControl]="getControl(index, 'weight')">
+                </mat-form-field>
+              </ng-template>
+            </editable>
+          </ng-container>
+          <ng-container *ngIf="column === 'symbol'">
+            <editable (update)="updateField(index, 'symbol')">
+              <ng-template viewMode>
+                {{element[column]}}
+              </ng-template>
+              <ng-template editMode>
+                <mat-form-field class="example-full-width">
+                  <input matInput [formControl]="getControl(index, 'symbol')" focusable editableOnEnter>
+                  <mat-error *ngIf="getControl(index, 'symbol').hasError('required')">
+                    This Field is required!
+                  </mat-error>
+                </mat-form-field>
+              </ng-template>
+            </editable>
+          </ng-container>
+          <ng-container *ngIf="column === 'status'">
+            <editable (update)="updateField(index, 'status')">
+              <ng-template viewMode>
+                {{element[column]}}
+              </ng-template>
+              <ng-template editMode>
+                <mat-form-field class="example-full-width">
+                  <mat-select [(value)]="selected" [formControl]="getControl(index, 'status')" focusable
+                    editableOnEnter>
+                    <mat-option>None</mat-option>
+                    <mat-option value="option1">Option 1</mat-option>
+                    <mat-option value="option2">Option 2</mat-option>
+                    <mat-option value="option3">Option 3</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-template>
+            </editable>
+          </ng-container>
+        </mat-cell>
+      </ng-container>
+      
+
+
+      <!-- <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
     <mat-cell *matCellDef="let element;let index = index">
       <editable (update)="updateField(index, 'name')">
@@ -40,16 +123,15 @@
              This Field is required!
             </mat-error>
           </mat-form-field>
-          <!-- <input  [formControl]="getControl(index, 'name')" focusable editableOnEnter> -->
         </ng-template>
       </editable>
     </mat-cell>
 
 
-  </ng-container>
+  </ng-container> -->
 
-  <!-- Weight Column -->
-  <ng-container matColumnDef="weight">
+
+      <!-- <ng-container matColumnDef="weight">
     <mat-header-cell *matHeaderCellDef> Weight </mat-header-cell>
     <mat-cell *matCellDef="let element;let index = index">
       <editable (update)="updateField(index, 'weight')">
@@ -63,10 +145,10 @@
         </ng-template>
       </editable>
     </mat-cell>
-  </ng-container>
+  </ng-container> -->
 
-  <!-- Symbol Column -->
-  <ng-container matColumnDef="symbol">
+
+      <!-- <ng-container matColumnDef="symbol">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Symbol </mat-header-cell>
     <mat-cell *matCellDef="let element;let index = index">
       <editable (update)="updateField(index, 'symbol')">
@@ -83,17 +165,35 @@
         </ng-template>
       </editable>
     </mat-cell>
-  </ng-container>
+  </ng-container> -->
 
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)"></mat-row>
-</table>
+      <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: columnsToDisplay;" (click)="selection.toggle(row)"></mat-row>
+    </table>
 
 
-<div class="example-container mat-elevation-z8">
-    <button mat-raised-button color="primary" (click)="removeSelectedRows()">
-      Remove Selected Rows
-    </button>
+    <div class="example-container mat-elevation-z8">
+      <button mat-raised-button color="primary" (click)="removeSelectedRows()">
+        Remove Selected Rows
+      </button>
+      <button mat-raised-button (click)="addColumn()"> Add column </button>
     </div>
   </mat-card-content>
-  </mat-card>
+</mat-card>
+
+<mat-card>
+  <mat-form-field>
+    <input matInput [(ngModel)] = "position" type="text">
+    <input matInput [(ngModel)] = "name" type="text">
+    <input matInput [(ngModel)] = "weight" type="text">
+    <input matInput [(ngModel)] = "symbol" type="text">
+    <mat-select [(value)]="status" >
+                    <mat-option>None</mat-option>
+                    <mat-option value="option1">Option 1</mat-option>
+                    <mat-option value="option2">Option 2</mat-option>
+                    <mat-option value="option3">Option 3</mat-option>
+                  </mat-select>
+    
+   </mat-form-field>
+   <button mat-raised-button (click) = "addRow()">Add</button>
+</mat-card>
