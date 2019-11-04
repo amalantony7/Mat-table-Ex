@@ -21,7 +21,7 @@
 
       <!-- Position Column -->
       <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
-        <ng-container *ngIf="column === 'select';else elseBlock">
+        <ng-container *ngIf="column === 'select';else elseBlock" sticky>
           <mat-header-cell *matHeaderCellDef>
             <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
               [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
@@ -39,7 +39,7 @@
               [checked]="selection.isSelected(element)" [aria-label]="checkboxLabel(element)">
             </mat-checkbox>
           </ng-container>
-          <ng-container *ngIf="column ===  'position'">
+          <ng-container *ngIf="column ===  'position'">         
             {{element[column]}}
           </ng-container>
           <ng-container *ngIf="column === 'name'">
@@ -178,22 +178,24 @@
       </button>
       <button mat-raised-button (click)="addColumn()"> Add column </button>
     </div>
+<div class="container">
+    <mat-form-field>
+        <input matInput [(ngModel)] = "position" type="text">
+        <input matInput [(ngModel)] = "name" type="text">
+        <input matInput [(ngModel)] = "weight" type="text">
+        <input matInput [(ngModel)] = "symbol" type="text">
+        <mat-select [(value)]="status" >
+                        <mat-option>None</mat-option>
+                        <mat-option value="option1">Option 1</mat-option>
+                        <mat-option value="option2">Option 2</mat-option>
+                        <mat-option value="option3">Option 3</mat-option>
+                      </mat-select>
+        
+       </mat-form-field>
+       <button mat-raised-button (click) = "addRow()">Add</button>
+</div>
+
+
   </mat-card-content>
 </mat-card>
 
-<mat-card>
-  <mat-form-field>
-    <input matInput [(ngModel)] = "position" type="text">
-    <input matInput [(ngModel)] = "name" type="text">
-    <input matInput [(ngModel)] = "weight" type="text">
-    <input matInput [(ngModel)] = "symbol" type="text">
-    <mat-select [(value)]="status" >
-                    <mat-option>None</mat-option>
-                    <mat-option value="option1">Option 1</mat-option>
-                    <mat-option value="option2">Option 2</mat-option>
-                    <mat-option value="option3">Option 3</mat-option>
-                  </mat-select>
-    
-   </mat-form-field>
-   <button mat-raised-button (click) = "addRow()">Add</button>
-</mat-card>
