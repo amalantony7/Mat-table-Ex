@@ -177,6 +177,15 @@
         Remove Selected Rows
       </button>
       <button mat-raised-button (click)="addColumn()"> Add column </button>
+      <div class="btn-group">
+       
+        <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="#" *ngFor= "let items of alteredColumns;let index = index" (click)="addColumn(index)">{{items}}</a>
+        </div>
+      </div>
     </div>
 <div class="container">
     <mat-form-field>
@@ -184,7 +193,7 @@
         <input matInput [(ngModel)] = "name" type="text">
         <input matInput [(ngModel)] = "weight" type="text">
         <input matInput [(ngModel)] = "symbol" type="text">
-        <mat-select [(value)]="status" >
+        <mat-select [(value)]="status">
                         <mat-option>None</mat-option>
                         <mat-option value="option1">Option 1</mat-option>
                         <mat-option value="option2">Option 2</mat-option>
@@ -194,7 +203,6 @@
        </mat-form-field>
        <button mat-raised-button (click) = "addRow()">Add</button>
 </div>
-
 
   </mat-card-content>
 </mat-card>

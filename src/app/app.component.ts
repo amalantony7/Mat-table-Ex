@@ -24,6 +24,8 @@ export class AppComponent {
   weight  : number;
   symbol : string ="";
   status : string ="";
+
+  columnAdd = "";
   
 
 
@@ -60,12 +62,16 @@ export class AppComponent {
 
   }
 
-  addColumn() {
-    let randomColumn = 0;
-    while (randomColumn === 0) {
-      randomColumn = this.getRandomIndex();
-    }
-    this.columnsToDisplay.push(this.displayedColumns[randomColumn]);
+  get alteredColumns(){
+    console.log(this.displayedColumns.slice(1))
+    return this.displayedColumns.slice(1)
+  }
+
+  addColumn(index) {
+
+      console.log(index);
+      this.columnsToDisplay.push(this.displayedColumns[index]);
+
 
   }
 
