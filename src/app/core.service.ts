@@ -22,7 +22,7 @@ export class CoreService {
   ];
   list$: BehaviorSubject<PeriodicElement[]> = new BehaviorSubject(this.list);
 
-  listHeader = ['select','position', 'name', 'weight', 'symbol', 'status'];
+  listHeader = ['position', 'name', 'weight', 'symbol', 'status'];
 
   constructor() {
   }

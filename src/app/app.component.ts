@@ -69,14 +69,10 @@ export class AppComponent {
 
   addColumn(index) {
 
-      console.log(index);
+      console.log(this.displayedColumns);
       this.columnsToDisplay.push(this.displayedColumns[index]);
 
 
-  }
-
-  getRandomIndex() {
-    return Math.floor(Math.random() * this.displayedColumns.length);
   }
 
 
