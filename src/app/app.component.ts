@@ -26,6 +26,11 @@ export class AppComponent {
   status : string ="";
 
   columnAdd = "";
+
+  options = [
+    {"icon" : "/assets/icon/group.png" , "field" : "position"},
+    {"icon" : "/assets/icon/Group 13.png" , "field" : "name"}
+  ]
   
 
 
